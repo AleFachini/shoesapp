@@ -62,12 +62,19 @@ class _SizeTile extends StatelessWidget {
       height: 45,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: []),
+          color: sizeFeet == 9.0 ? Color(0xfff1a23a) : Colors.white,
+          boxShadow: sizeFeet == 9.0
+              ? [
+                  BoxShadow(
+                      color: Color(0xffeaa14e),
+                      blurRadius: 10,
+                      offset: Offset(5, 10))
+                ]
+              : []),
       child: Text(
         '${sizeFeet.toString().replaceAll('.0', '')}',
         style: TextStyle(
-          color: Color(0xfff1a23a),
+          color: sizeFeet == 9.0 ? Colors.white : Color(0xfff1a23a),
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
