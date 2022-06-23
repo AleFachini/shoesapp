@@ -25,7 +25,8 @@ class ShoePage extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
+          AddToCart(amount: 100.0),
         ],
       ),
     );
