@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shoesapp/src/models/shoe_model.dart';
+import 'package:shoesapp/src/pages/shoe_desc_page.dart';
 
 class ShoeSizePreview extends StatelessWidget {
   final bool fullScreen;
@@ -7,30 +10,40 @@ class ShoeSizePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: fullScreen ? 5 : 30,
-        vertical: fullScreen ? 0 : 5,
-      ),
-      child: Container(
-        width: double.infinity,
-        height: fullScreen ? 410 : 430,
-        decoration: BoxDecoration(
-          color: Color(0xffffcf53),
-          borderRadius: fullScreen
-              ? BorderRadius.only(
-                  bottomLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50),
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
-                )
-              : BorderRadius.circular(50),
+    return GestureDetector(
+      onTap: () {
+        if (!fullScreen) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ShoeDescriptionPage()));
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: fullScreen ? 5 : 30,
+          vertical: fullScreen ? 0 : 5,
         ),
-        child: Column(
-          children: [
-            _ShoeWithShadow(),
-            if (!fullScreen) _ShoeSizes(),
-          ],
+        child: Container(
+          width: double.infinity,
+          height: fullScreen ? 410 : 430,
+          decoration: BoxDecoration(
+            color: Color(0xffffcf53),
+            borderRadius: fullScreen
+                ? BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                    bottomRight: Radius.circular(50),
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  )
+                : BorderRadius.circular(50),
+          ),
+          child: Column(
+            children: [
+              _ShoeWithShadow(),
+              if (!fullScreen) _ShoeSizes(),
+            ],
+          ),
         ),
       ),
     );
@@ -68,27 +81,36 @@ class _SizeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      width: 45,
-      height: 45,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: sizeFeet == 9.0 ? Color(0xfff1a23a) : Colors.white,
-          boxShadow: sizeFeet == 9.0
-              ? [
-                  BoxShadow(
-                      color: Color(0xffeaa14e),
-                      blurRadius: 10,
-                      offset: Offset(5, 10))
-                ]
-              : []),
-      child: Text(
-        '${sizeFeet.toString().replaceAll('.0', '')}',
-        style: TextStyle(
-          color: sizeFeet == 9.0 ? Colors.white : Color(0xfff1a23a),
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+    final shoeModel = Provider.of<ShoeModel>(context);
+
+    return GestureDetector(
+      onTap: () {
+        shoeModel.talla = this.sizeFeet;
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color:
+                sizeFeet == shoeModel.talla ? Color(0xfff1a23a) : Colors.white,
+            boxShadow: sizeFeet == shoeModel.talla
+                ? [
+                    BoxShadow(
+                        color: Color(0xffeaa14e),
+                        blurRadius: 10,
+                        offset: Offset(5, 10))
+                  ]
+                : []),
+        child: Text(
+          '${sizeFeet.toString().replaceAll('.0', '')}',
+          style: TextStyle(
+            color:
+                sizeFeet == shoeModel.talla ? Colors.white : Color(0xfff1a23a),
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -100,12 +122,14 @@ class _ShoeWithShadow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shoeModel = Provider.of<ShoeModel>(context);
+
     return Padding(
       padding: EdgeInsets.all(50),
       child: Stack(
         children: [
           Positioned(child: _Shadow(), bottom: 20, right: 0),
-          Image(image: AssetImage('assets/imgs/azul.png')),
+          Image(image: AssetImage(shoeModel.assetImage)),
         ],
       ),
     );

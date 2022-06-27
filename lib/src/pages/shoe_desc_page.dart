@@ -1,4 +1,7 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shoesapp/src/models/shoe_model.dart';
 import 'package:shoesapp/src/widgets/widgets_barrel.dart';
 
 class ShoeDescriptionPage extends StatelessWidget {
@@ -11,11 +14,13 @@ class ShoeDescriptionPage extends StatelessWidget {
       children: [
         Stack(
           children: [
-            ShoeSizePreview(fullScreen: true),
+            Hero(tag: 'shoe-1', child: ShoeSizePreview(fullScreen: true)),
             Positioned(
               top: 80,
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: Icon(
                   Icons.chevron_left,
                   color: Colors.white,
@@ -113,10 +118,19 @@ class _ColorPalletteRow extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                Positioned(left: 90, child: _ColorButton(Color(0xffc6d642))),
-                Positioned(left: 60, child: _ColorButton(Color(0xffffad29))),
-                Positioned(left: 30, child: _ColorButton(Color(0xff2099f1))),
-                _ColorButton(Color(0xff364d56)),
+                Positioned(
+                    left: 90,
+                    child: _ColorButton(
+                        Color(0xffc6d642), 4, 'assets/imgs/verde.png')),
+                Positioned(
+                    left: 60,
+                    child: _ColorButton(
+                        Color(0xffffad29), 3, 'assets/imgs/amarillo.png')),
+                Positioned(
+                    left: 30,
+                    child: _ColorButton(
+                        Color(0xff2099f1), 2, 'assets/imgs/azul.png')),
+                _ColorButton(Color(0xff364d56), 1, 'assets/imgs/negro.png'),
               ],
             ),
           ),
@@ -134,17 +148,27 @@ class _ColorPalletteRow extends StatelessWidget {
 
 class _ColorButton extends StatelessWidget {
   final Color? color;
+  final int index;
+  final String urlImage;
 
-  _ColorButton(
-    this.color,
-  );
+  _ColorButton(this.color, this.index, this.urlImage);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 45,
-      height: 45,
-      decoration: BoxDecoration(color: color!, shape: BoxShape.circle),
+    return FadeInLeft(
+      delay: Duration(milliseconds: index * 100),
+      duration: Duration(milliseconds: 400),
+      child: GestureDetector(
+        onTap: () {
+          final shoeModel = Provider.of<ShoeModel>(context, listen: false);
+          shoeModel.assetImage = urlImage;
+        },
+        child: Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(color: color!, shape: BoxShape.circle),
+        ),
+      ),
     );
   }
 }
@@ -167,10 +191,14 @@ class _AmountAndBuy extends StatelessWidget {
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             Spacer(),
-            OvalButton(
-              text: 'Buy now',
-              width: 110,
-              height: 40,
+            Bounce(
+              delay: Duration(milliseconds: 1000),
+              from: 8,
+              child: OvalButton(
+                text: 'Buy now',
+                width: 110,
+                height: 40,
+              ),
             ),
           ],
         ),
